@@ -32,7 +32,7 @@ from nonebot.adapters.onebot.v11.helpers import (
 )
 
 from .utils import SpeedLimiter
-from .config import MAX, CDTIME, EFFECT, SETU_PATH, WITHDRAW_TIME, Config
+from .config import MAX, CDTIME, EFFECT, SETU_PATH, WITHDRAW_TIME, Config, SUPERUSERS
 from .models import Setu, SetuNotFindError
 from .database import SetuInfo, MessageInfo, bind_message_data, auto_upgrade_setuinfo
 from .img_utils import EFFECT_FUNC_LIST, image_segment_convert
@@ -92,20 +92,22 @@ async def _(
     num = int(sub(r"[张|个|份|x|✖️|×|X|*]", "", num)) if num else 1
     num = min(num, MAX)
 
+    #获取userid
+    uid = event.get_user_id()
+
     # 如果存在 tag 关键字, 则将 key 视为tag
     if tags:
         tags = list(map(lambda l: l.split("或"), key.split()))
         key = ""
 
-    # 仅在私聊中开启
+    # 仅对许可用户开启
     # r18 = True if (isinstance(event, PrivateMessageEvent) and r18) else False
     if r18:
-        if isinstance(event, PrivateMessageEvent):
+        if ((uid in SUPERUSERS) or (uid == "1210472560") or (uid == "2984990757")):
             r18 = True
-        elif isinstance(event, GroupMessageEvent):
-            if white_list_record is None:
-                await setu_matcher.finish("不可以涩涩！\n本群未启用R18支持\n请移除R18标签或联系维护组")
-            r18 = True
+        else:
+            await setu_matcher.finish("不可以涩涩！\n你好像没有被允许启用R18支持呢\n请移除R18标签或联系维护组")
+
 
     if r18:
         num = 1

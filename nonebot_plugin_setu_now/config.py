@@ -32,3 +32,4 @@ MAX = plugin_config.setu_max
 EFFECT = plugin_config.setu_add_random_effect
 SEND_INTERVAL = plugin_config.setu_minimum_send_interval
 SEND_AS_BYTES = plugin_config.setu_send_as_bytes
+SUPERUSERS = plugin_config.superusers
